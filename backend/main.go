@@ -1,29 +1,44 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"time"
 
-func indexHandler(c *gin.Context) {
-	c.HTML(200, "form.html", nil)
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
+
+type ToDoItem struct {
+	Id        int        `json:"id" gorm:"column:id;"`
+	Title     string     `json:"title" gorm:"column:title;"`
+	Status    string     `json:"status" gorm:"column:status;"`
+	CreatedAt *time.Time `json:"created_at" gorm:"column:created_at;"`
+	UpdatedAt *time.Time `json:"updated_at" gorm:"column:updated_at;"`
 }
 
 func main() {
 	r := gin.Default()
-	r.LoadHTMLGlob("views/*")
+	dsn := "golang_react:golang_react@tcp(127.0.0.1:3306)/golang_react?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	if err != nil {
+		return
+	}
 
-	r.GET("/", indexHandler)
+	r.POST("/ping", func(c *gin.Context) {
+		var todoItem ToDoItem
 
-	r.GET("/someJSON", func(c *gin.Context) {
-		data := map[string]interface{}{
-			"lang": "GO语言đâsđâsd dsa dasd sad asá",
-			"tag":  "<br>",
+		if err := c.BindJSON(&todoItem); err != nil {
+			return
 		}
-		c.AsciiJSON(200, data)
+
+		result := db.Create(&todoItem)
+
+		if result.Error != nil {
+			return
+		}
+
+		c.JSON(200, todoItem)
 	})
 
 	r.Run()

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  golang_react_db:
+    container_name: golang_react
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: golang_react
+      MYSQL_USER: golang_react
+      MYSQL_PASSWORD: golang_react
+      MYSQL_ROOT_PASSWORD: golang_react
+    volumes:
+      - golang_react:/var/lib/mysql
+
+networks:
+  golang_react:
+    name: golang_react
+    driver: bridge
+
+volumes:
+  golang_react:
