@@ -8,7 +8,7 @@ const TodoPage = lazy(() => import('../Pages/Todo'));
 const routes = [
   {
     path: '/',
-    element: <TodoPage />
+    element: <HomePage />
   },
   {
     path: 'todo',
