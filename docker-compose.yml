@@ -3,7 +3,7 @@ version: '3.8'
 services:
   golang_react_db:
     container_name: golang_react
-    image: mysql:5.7
+    image: mysql:8.0.28-oracle
     restart: always
     ports:
       - 3306:3306
